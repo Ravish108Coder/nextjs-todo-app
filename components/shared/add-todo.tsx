@@ -12,8 +12,6 @@ import { TodoItem } from "@/app/page"
 import { useRef, useState } from "react"
 
 interface AddTodoProps {
-    // setTodoData: (item:TodoItem=>TodoItem[])
-    // setTodoData: () => void;
     setTodoData: React.Dispatch<React.SetStateAction<TodoItem[]>>;
 }
 
@@ -36,9 +34,6 @@ const AddTodo = ({setTodoData}: AddTodoProps) => {
             title: data.title,
             userId: Number(formData.get('userId'))
         }
-        // console.log(newTodo)
-        // const todos:TodoItem[] = []
-        // const newTodos:TodoItem[] = [...todos, newTodo]
         setTodoData(prev=>[newTodo, ...prev])
         setOpen(!open)
     }
@@ -49,7 +44,7 @@ const AddTodo = ({setTodoData}: AddTodoProps) => {
             </DialogTrigger>
             <DialogContent>
                 <form ref={formRef} onSubmit={handleSubmit}>
-                    <Textarea name="title" placeholder="title" className="my-2" />
+                    <Textarea name="title" placeholder="title" className="my-4" />
                     <div className="flex items-center space-x-2">
                         <label
                             htmlFor="isCompleted"

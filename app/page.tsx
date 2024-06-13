@@ -1,6 +1,7 @@
 'use client'
 
 import AddTodo from "@/components/shared/add-todo";
+import { SelectTodo } from "@/components/shared/select-todo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Delete, SquareCheckBig, Trash } from "lucide-react";
@@ -15,6 +16,7 @@ export type TodoItem = {
 }
 
 export default function Home() {
+  const [filterCompleted, setFilterCompleted] = useState(-1);
   const [editableTitle, setEditableTitle] = useState("")
   const [edittodoId, setEditTodoId] = useState<string | number>(-1)
   const [todoData, setTodoData] = useState<TodoItem[]>([])
@@ -55,15 +57,23 @@ export default function Home() {
         <AddTodo setTodoData={setTodoData} />
         <Button variant="destructive" onClick={handleResetTodos}>Reset Todos</Button>
       </div>
-      <div className="flex justify-center items-center mb-4">
-        <div className="w-1/4 relative">
+      <div className="flex justify-end items-center mb-4">
+        <div className="w-2/3 flex gap-6">
+        <div className="relative">
           <Input type="text" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Search Todos" />
           <Delete onClick={() => setFilter("")} className={`cursor-pointer absolute right-2 top-1/4 opacity-65 ${filter === "" && "hidden"}`} />
+        </div>
+        <div className="flex-1">
+        <SelectTodo setFilterCompleted={setFilterCompleted}/>
+        </div>
         </div>
       </div>
       <div className="grid grid-cols-4 gap-8 p-2">
         {
-          todoData.filter(todo => todo.title.toLowerCase().includes(filter.toLowerCase())).map((todoItem) => (
+          todoData
+          .filter(todo => todo.title.toLowerCase().includes(filter.toLowerCase()))
+          .filter(todo => filterCompleted === -1 || Number(todo.completed)=== filterCompleted)
+          .map((todoItem) => (
             <div key={todoItem.id} className="grid grid-cols-2 bg-primary/10 p-4 relative">
               <p>😎</p>
               {
