@@ -70,20 +70,20 @@ export default function Home() {
             .filter(todo => todo.title.toLowerCase().includes(filter.toLowerCase()))
             .filter(todo => filterCompleted === -1 || Number(todo.completed) === filterCompleted)
             .map((todoItem) => (
-              <div key={todoItem.id} className="grid grid-cols-2 bg-primary/10 p-4 relative min-h-[176px]">
+              <div key={todoItem.id} className={`grid grid-cols-2 ${todoItem.completed ? "bg-green-200" : "bg-primary/10"} p-4 relative min-h-[176px]`}>
                 <p>😎</p>
                 {
                   edittodoId === todoItem.id ? (
                     <Input type="text" value={editableTitle} onChange={(e) => setEditableTitle(e.target.value)} />
                   ) : (
-                    <p onClick={() => {
+                    <p className="hover:border border-black" onClick={() => {
                       setEditTodoId(todoItem.id)
                       setEditableTitle(todoItem.title)
                     }}>{todoItem.title}</p>
                   )
                 }
                 <p>{todoItem.userId}</p>
-                <p>{todoItem.completed ? "true" : "false"}</p>
+                <p className="cursor-pointer hover:text-red-500" onClick={()=>setTodoData(todoData.map((item) => item.id === todoItem.id ? { ...item, completed: !item.completed } : item))}>{todoItem.completed ? "true" : "false"}</p>
                 {
                   edittodoId === todoItem.id ? (
                     <SquareCheckBig className="cursor-pointer" onClick={() => {
