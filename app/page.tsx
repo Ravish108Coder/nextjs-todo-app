@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useTodoContext } from "@/hooks/useTodoContext-hook";
 import { Delete } from "lucide-react";
 // import { useFetch } from "@/hooks/useFetch-hook";
-import {useState } from "react";
+import { Suspense, useState } from "react";
 
 export type TodoItem = {
   userId: number,
@@ -18,7 +18,7 @@ export type TodoItem = {
 }
 
 export default function Home() {
-  const {todoData, setTodoData} = useTodoContext()
+  const { todoData, setTodoData } = useTodoContext()
   const [filterCompleted, setFilterCompleted] = useState(-1);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
@@ -46,7 +46,7 @@ export default function Home() {
 
   const handleResetTodos = () => setTodoData([])
 
-  if (loading) return <div>Loading...</div>
+  // if (loading) return <div>Loading...</div>
 
   if (error) return <div>error...</div>
 
@@ -54,27 +54,49 @@ export default function Home() {
     <main>
       <h1 className="text-center text-3xl">Todo Application</h1>
       <div className="flex justify-between px-6 items-center my-4">
-        <Button variant="outline" onClick={handleFetchTodos}>Fetch Todos</Button>
+        <Button disabled={todoData.length > 0} variant="outline" onClick={handleFetchTodos}>Fetch Todos</Button>
         <AddTodo />
-        <Button variant="destructive" onClick={handleResetTodos}>Reset Todos</Button>
+        <Button disabled={todoData.length === 0} variant="destructive" onClick={handleResetTodos}>Reset Todos</Button>
       </div>
       <div className="flex justify-center items-center mb-4 gap-6">
         <div className="w-1/6 relative">
-          <Input type="text" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Search Todos" />
+          <Input disabled={todoData.length === 0} type="text" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Search Todos" />
           <Delete onClick={() => setFilter("")} className={`cursor-pointer absolute right-2 top-1/4 opacity-65 ${filter === "" && "hidden"}`} />
         </div>
         <SelectTodo setFilterCompleted={setFilterCompleted} />
       </div>
-      <div className="grid grid-cols-4 gap-8 p-2">
-        {
-          todoData
-            .filter(todo => todo.title.toLowerCase().includes(filter.toLowerCase()))
-            .filter(todo => filterCompleted === -1 || Number(todo.completed) === filterCompleted)
-            .map((todoItem) => (
-              <TodoComponent todoItem={todoItem} key={todoItem.id} />
-            ))
-        }
-      </div>
+      {
+        loading &&
+        <div className="grid grid-cols-4 gap-8 p-2">
+          {Array(16).fill(0).map((_, index) => {
+            return (
+              <div key={index} className="bg-primary/10 animate-pulse h-44 w-full rounded-lg shadow-lg"></div>
+            )
+          })}
+        </div>
+      }
+      {!loading &&
+        todoData.length > 0 ? (
+        <div className="grid grid-cols-4 gap-8 p-2">
+          {
+            todoData
+              .filter(todo => todo.title.toLowerCase().includes(filter.toLowerCase()))
+              .filter(todo => filterCompleted === -1 || Number(todo.completed) === filterCompleted)
+              .map((todoItem) => (
+                <TodoComponent todoItem={todoItem} key={todoItem.id} />
+              ))
+          }
+        </div>
+      ) : (
+        <div className="h-[50vh] flex items-center justify-center">
+          <h1 className="flex flex-col justify-center items-center gap-6 text-3xl font-semibold bg-primary/10 p-6">
+            <span>Add a todo</span>
+            <span>OR</span>
+            <span>Fetch todos by clicking on top left side</span>
+          </h1>
+        </div>
+      )
+      }
     </main>
   );
 }
