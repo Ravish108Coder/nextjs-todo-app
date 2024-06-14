@@ -2,11 +2,13 @@
 
 import AddTodo from "@/components/shared/add-todo";
 import { SelectTodo } from "@/components/shared/select-todo";
+import TodoComponent from "@/components/shared/todo-component";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Delete, SquareCheckBig, Trash } from "lucide-react";
+import { useTodoContext } from "@/hooks/useTodoContext-hook";
+import { Delete } from "lucide-react";
 // import { useFetch } from "@/hooks/useFetch-hook";
-import { useState } from "react";
+import {useState } from "react";
 
 export type TodoItem = {
   userId: number,
@@ -16,14 +18,13 @@ export type TodoItem = {
 }
 
 export default function Home() {
+  const {todoData, setTodoData} = useTodoContext()
   const [filterCompleted, setFilterCompleted] = useState(-1);
-  const [editableTitle, setEditableTitle] = useState("")
-  const [edittodoId, setEditTodoId] = useState<string | number>(-1)
-  const [todoData, setTodoData] = useState<TodoItem[]>([])
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const [filter, setFilter] = useState("")
   // const [data, loading, error]= useFetch('https://jsonplaceholder.typicode.com/todos')
+
   const handleFetchTodos = async () => {
     if (todoData.length > 0) {
       alert('already fetched todos')
@@ -54,7 +55,7 @@ export default function Home() {
       <h1 className="text-center text-3xl">Todo Application</h1>
       <div className="flex justify-between px-6 items-center my-4">
         <Button variant="outline" onClick={handleFetchTodos}>Fetch Todos</Button>
-        <AddTodo setTodoData={setTodoData} />
+        <AddTodo />
         <Button variant="destructive" onClick={handleResetTodos}>Reset Todos</Button>
       </div>
       <div className="flex justify-center items-center mb-4 gap-6">
@@ -70,31 +71,7 @@ export default function Home() {
             .filter(todo => todo.title.toLowerCase().includes(filter.toLowerCase()))
             .filter(todo => filterCompleted === -1 || Number(todo.completed) === filterCompleted)
             .map((todoItem) => (
-              <div key={todoItem.id} className={`grid grid-cols-2 ${todoItem.completed ? "bg-green-200" : "bg-primary/10"} p-4 relative min-h-[176px]`}>
-                <p>😎</p>
-                {
-                  edittodoId === todoItem.id ? (
-                    <Input type="text" value={editableTitle} onChange={(e) => setEditableTitle(e.target.value)} />
-                  ) : (
-                    <p className="hover:border border-black" onClick={() => {
-                      setEditTodoId(todoItem.id)
-                      setEditableTitle(todoItem.title)
-                    }}>{todoItem.title}</p>
-                  )
-                }
-                <p>{todoItem.userId}</p>
-                <p className="cursor-pointer hover:text-red-500" onClick={()=>setTodoData(todoData.map((item) => item.id === todoItem.id ? { ...item, completed: !item.completed } : item))}>{todoItem.completed ? "true" : "false"}</p>
-                {
-                  edittodoId === todoItem.id ? (
-                    <SquareCheckBig className="cursor-pointer" onClick={() => {
-                      setTodoData(todoData.map((item) => item.id === todoItem.id ? { ...item, title: editableTitle } : item))
-                      setEditTodoId(-1)
-                    }} />
-                  ) : (
-                    <Trash onClick={() => setTodoData(todoData.filter((item) => item.id !== todoItem.id))} className="absolute right-1 bottom-1 cursor-pointer" />
-                  )
-                }
-              </div>
+              <TodoComponent todoItem={todoItem} key={todoItem.id} />
             ))
         }
       </div>
@@ -104,3 +81,5 @@ export default function Home() {
 
 
 // with nextjs jsonfakeapi no routing no http methods and server actions
+
+// with redux or database needed specailly with server actions and prisma
