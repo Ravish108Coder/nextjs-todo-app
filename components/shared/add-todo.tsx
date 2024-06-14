@@ -55,7 +55,7 @@ const AddTodo = () => {
                         >
                             Completed
                         </label>
-                        <Checkbox name="completed" id="isCompleted" required />
+                        <Checkbox name="completed" id="isCompleted" />
                     </div>
                     <Button type="submit">Add</Button>
                 </form>
