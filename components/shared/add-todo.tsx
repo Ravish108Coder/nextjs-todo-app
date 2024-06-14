@@ -44,7 +44,7 @@ const AddTodo = () => {
             <DialogTrigger asChild>
                 <Button>Add Todo</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="top-44 sm:top-1/2">
                 <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <Textarea name="title" placeholder="title" required />
                     <Input name="userId" type="number" placeholder="userId" autoComplete="off" required />
