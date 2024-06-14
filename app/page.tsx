@@ -67,7 +67,7 @@ export default function Home() {
       </div>
       {
         loading &&
-        <div className="grid grid-cols-4 gap-8 p-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 p-2">
           {Array(16).fill(0).map((_, index) => {
             return (
               <div key={index} className="bg-primary/10 animate-pulse h-44 w-full rounded-lg shadow-lg"></div>
@@ -77,7 +77,7 @@ export default function Home() {
       }
       {!loading &&
         todoData.length > 0 ? (
-        <div className="grid grid-cols-4 gap-8 p-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 p-2">
           {
             todoData
               .filter(todo => todo.title.toLowerCase().includes(filter.toLowerCase()))
