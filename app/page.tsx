@@ -58,8 +58,8 @@ export default function Home() {
         <AddTodo />
         <Button disabled={todoData.length === 0} variant="destructive" onClick={handleResetTodos}>Reset Todos</Button>
       </div>
-      <div className="flex justify-center items-center mb-4 gap-6">
-        <div className="w-1/6 relative">
+      <div className="flex justify-center items-center mb-4 gap-2 md:gap-6">
+        <div className="md:w-1/6 sm:w-1/4 w-1/2 px-2 sm:px-0 relative">
           <Input disabled={todoData.length === 0} type="text" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Search Todos" />
           <Delete onClick={() => setFilter("")} className={`cursor-pointer absolute right-2 top-1/4 opacity-65 ${filter === "" && "hidden"}`} />
         </div>
